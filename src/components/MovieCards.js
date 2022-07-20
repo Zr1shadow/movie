@@ -30,6 +30,7 @@ export default function MovieCards({ movieName }) {
             console.log(data)
             // console.log("useEffect runs Twice on mount. To remove delete </React.StrictMode> from index.js")
             setMovies(data.Search)
+            console.log(movies)
             setIsLoading(false)
         }
         getMoviesByName()

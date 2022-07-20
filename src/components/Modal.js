@@ -1,36 +1,89 @@
 import React from 'react'
 import ReactModal from 'react-modal'
-import { useEffect, useState } from 'react'
+import styled from "styled-components"
 
-const API_KEY = process.env.REACT_APP_MOVIE_API_KEY;
+const ModalContainer = styled.div`
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-areas: 
+    'img top . .'
+    'img . middle .'
+    'img . . bottom';
+`
+const ModalImg = styled.img`
+    width:100%;
+    height:100%;
+    grid-area: img;
+`
 
-const Modal = ({isModalOpen, setIsModalOpen, title, movieId}) => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [movie, setMovie] = useState([])
+const ModalHeader = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    grid-area: top;
+`
 
-    console.log("Modal rendered!")
-    useEffect(() => {
-        async function getMoviesByName() {
-            setIsLoading(true)
-            const url = `http://www.omdbapi.com/?apikey=${API_KEY}&i=${movieId}`
-            const res = await fetch(url)
-            const data = await res.json()
-            console.log(data)
-            // console.log("useEffect runs Twice on mount. To remove delete </React.StrictMode> from index.js")
-            setMovie(data.Search)
-            setIsLoading(false)
-        }
-        getMoviesByName()
-    }, [movieId])
+const ModalMain = styled.div`
+    grid-area: middle;
+    width:100%;
+    text-align: center;
+`
+
+const ModalFooter = styled.div`
+    grid-area: bottom;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+`
+
+const Modal = ({isModalOpen, setIsModalOpen, setIsLoading, Title, Actors, Poster, Plot, Rated, Runtime, Ratings, imdbRating}) => {
   return (
-    <> 
-        <ReactModal isOpen={isModalOpen} ariaHideApp={false}>
-            <button onClick={() => setIsModalOpen(false)}>Close Modal</button>
-            <h1>{title}</h1>
-        </ReactModal>
-              
-    </>  
-    )
+    <ReactModal isOpen={isModalOpen} ariaHideApp={false}>
+        <button onClick={() => setIsModalOpen(false)}>Close Modal</button>
+        
+            <div>{setIsLoading}</div>
+            <ModalContainer>
+                <ModalImg src={Poster}/>
+                <ModalHeader>
+                    <h2>
+                        Title: {Title}
+                    </h2>
+                    <h4>
+                        Actors: {Actors}
+                    </h4>
+                </ModalHeader>
+                <ModalMain>
+                    <p>
+                        {Runtime} {Rated}
+                    </p>
+                    <p>
+                        Plot: {Plot}
+                    </p>
+                </ModalMain>
+                <ModalFooter>
+                    <h4>
+                        Ratings:
+                    </h4>
+                    <ul>
+                        <li>
+                            {Ratings[1].Source}{Ratings[1].Value}
+                        </li>
+                        <li>
+                            {Ratings[2].Source}{Ratings[2].Value}
+                        </li>
+                        <li>
+                            imbRating{imdbRating}
+                        </li>
+                    </ul>
+                </ModalFooter>
+            </ModalContainer>        
+         
+    </ReactModal>
+  )
 }
 
 export default Modal
